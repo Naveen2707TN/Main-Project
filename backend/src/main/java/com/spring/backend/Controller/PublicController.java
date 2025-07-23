@@ -2,6 +2,8 @@ package com.spring.backend.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,12 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.backend.Entity.userEntity;
 import com.spring.backend.Exception.UserException;
 import com.spring.backend.Service.userService;
+import com.spring.backend.Token.JwtToken;
 
 @RestController
 @RequestMapping("/public")
 public class PublicController {
     
     @Autowired private userService userService;
+
+    @Autowired private JwtToken jwtToken;
 
     @PostMapping("/reg")
     public ResponseEntity<?> RegisterUser(@RequestBody userEntity userEntity){
@@ -36,7 +41,10 @@ public class PublicController {
         try {
             userEntity users = userService.UserLoginService(userEntity);
             if (users != null) {
-                return ResponseEntity.ok().body("Login Success");
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userEntity.getEmail(), userEntity.getPass());
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                String Token = jwtToken.GenerateToken(userEntity.getName());
+                return ResponseEntity.ok().body(Token);
             }
         } catch (UserException e) {
             return ResponseEntity.badRequest().body("error : "+ e.getMessage());
@@ -49,7 +57,10 @@ public class PublicController {
         try {
             userEntity users = userService.VerifyUser(Code);
             if (users != null) {
-                return ResponseEntity.ok().body("Register Success ");
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(users.getEmail(), users.getPass());
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                String Token = jwtToken.GenerateToken(users.getName());
+                return ResponseEntity.ok().body(Token);
             }
         } catch (UserException e) {
             return ResponseEntity.badRequest().body("error : "+ e.getMessage());

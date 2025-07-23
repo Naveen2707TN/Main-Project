@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.spring.backend.Entity.userEntity;
@@ -27,10 +28,13 @@ public class userService implements UserServiceInterface{
 
     @Autowired private JavaMailSender javaMailSender;
 
+    @Autowired PasswordEncoder passwordEncoder;
+
     @Override
     public userEntity UserRegisterService(userEntity ue) {
         userEntity email = userRepo.findByEmail(ue.getEmail());
         userEntity name = userRepo.findByName(ue.getName());
+        String pass = passwordEncoder.encode(ue.getPass());
         if (email != null) {
             throw new UserException("this email id Already Registred");
         }else if(name != null){
@@ -40,7 +44,7 @@ public class userService implements UserServiceInterface{
         }else if(ue.getName().length() <= 7){
             throw new UserException("user password length should be more than 7 char");
         }else if(email == null && name == null){
-            userEntitys = new userEntity(null, ue.getEmail(), ue.getName(), ue.getPass(), false, null);
+            userEntitys = new userEntity(null, ue.getEmail(), ue.getName(), pass, false, null);
             return ue;
         }
         return null;
@@ -49,8 +53,9 @@ public class userService implements UserServiceInterface{
     @Override
     public userEntity UserLoginService(userEntity ue) {
         userEntity email = userRepo.findByEmail(ue.getEmail());
-        if (email != null && ue.getPass().equals(email.getPass())) {
+        if (email != null && passwordEncoder.matches(ue.getPass(), email.getPass())) {
             userId = email.getUserid();
+            System.out.println("true");
             return ue;
         }
         throw new UserException("user email id or password is incorrect");
