@@ -41,7 +41,7 @@ public class userService implements UserServiceInterface{
             throw new UserException("this user name already taken by another user");
         }else if(ue.getName().length() <= 3){
             throw new UserException("user name length should be more than 3 char");
-        }else if(ue.getName().length() <= 7){
+        }else if(ue.getPass().length() < 7){
             throw new UserException("user password length should be more than 7 char");
         }else if(email == null && name == null){
             userEntitys = new userEntity(null, ue.getEmail(), ue.getName(), pass, false, null);
@@ -95,6 +95,7 @@ public class userService implements UserServiceInterface{
         if (OTP == Code) {
             userEntitys.setIscheck(true);
             userEntitys.setCreatedate(new Date());
+            userId = userEntitys.getUserid();
             return userRepo.save(userEntitys);
         }
         throw new UserException("Invalid OTP Code Entered");

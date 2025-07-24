@@ -28,6 +28,7 @@ public class PublicController {
         try {
             userEntity users = userService.UserRegisterService(userEntity);
             if (users != null) {
+                userService.SendMail(userEntity);
                 return ResponseEntity.ok().body("move");
             }
         } catch (UserException e) {
