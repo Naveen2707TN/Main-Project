@@ -20,3 +20,5 @@ It supports basic features like:
 ## 📁 Project Structure
 
 ### Backend: Spring Boot
+
+### Frontend: React
