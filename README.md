@@ -22,3 +22,18 @@ It supports basic features like:
 ### Backend: Spring Boot
 
 ### Frontend: React
+
+---
+
+### Backend
+- Spring Boot (RESTful APIs)
+- Spring Security (JWT)
+- Hibernate / JPA (MySQL)
+- JWT (access + refresh tokens)
+- java Mail Sender
+
+### Frontend
+- React JS (Functional Components + Hooks)
+- frtch (API calls)
+- React Router DOM
+- Custom CSS
