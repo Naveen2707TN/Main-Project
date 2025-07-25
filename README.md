@@ -34,6 +34,6 @@ It supports basic features like:
 
 ### Frontend
 - React JS (Functional Components + Hooks)
-- frtch (API calls)
+- fetch (API calls)
 - React Router DOM
 - Custom CSS
